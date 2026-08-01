@@ -1,0 +1,69 @@
+---
+/**
+ * Document shell.
+ *
+ * Fonts, colours and metadata are all resolved at build time from the CMS
+ * singleton, emitted as CSS custom properties in a single inline <style>.
+ * Zero runtime cost, and Tailwind utilities keep working because
+ * tailwind.config.mjs points its tokens at the same properties.
+ */
+import Analytics from '../components/Analytics.astro';
+import { googleFontsHref, site, themeCssVariables } from '../lib/site.js';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  lang?: string;
+}
+
+const {
+  title = site.brand.siteTitle,
+  description = site.brand.metaDescription,
+  lang = site.brand.lang,
+} = Astro.props;
+
+const fontsHref = googleFontsHref();
+const cssVars = themeCssVariables();
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <!-- No maximum-scale / user-scalable=no: pinch zoom must stay available (WCAG 1.4.4). -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    <meta name="theme-color" content={site.theme.colorBg} />
+    <meta property="og:title" content={title} />
+    {description && <meta property="og:description" content={description} />}
+    <meta property="og:type" content="website" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <Analytics />
+
+    {
+      fontsHref && (
+        <>
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+          {/* display=swap is appended in googleFontsHref() so text is never invisible. */}
+          <link rel="stylesheet" href={fontsHref} />
+        </>
+      )
+    }
+
+    <style is:inline set:html={`:root {\n    ${cssVars}\n  }`}></style>
+  </head>
+
+  <body class="min-h-dvh bg-bg text-ink antialiased">
+    <Analytics body />
+
+    <a class="skip-link" href="#main">Skip to main content</a>
+
+    <div class="mx-auto flex min-h-dvh w-full max-w-card flex-col">
+      <slot />
+    </div>
+  </body>
+</html>

@@ -1,0 +1,29 @@
+---
+/**
+ * Editor-authored panel body.
+ *
+ * `bodyHtml` is markdown that was rendered and then run through an allow-list
+ * sanitiser at build time (src/lib/site.js), so `set:html` here is not a sink
+ * for anything a CMS user could inject.
+ */
+interface Props {
+  bodyHtml: string;
+  ctaLabel?: string;
+  ctaHref?: string;
+}
+
+const { bodyHtml, ctaLabel = '', ctaHref = '' } = Astro.props;
+const showCta = ctaLabel !== '' && ctaHref !== '';
+---
+
+{bodyHtml && <div class="prose-panel text-muted" set:html={bodyHtml} />}
+
+{
+  showCta && (
+    <p class="mt-5">
+      <a class="btn-secondary" href={ctaHref}>
+        {ctaLabel}
+      </a>
+    </p>
+  )
+}

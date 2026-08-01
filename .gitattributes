@@ -1,0 +1,14 @@
+# Normalise line endings so the CMS (which commits from a browser on Netlify's
+# servers) and local editors on Windows/macOS do not fight over every file.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.avif binary
+*.mp4 binary
+*.webm binary
+*.woff binary
+*.woff2 binary
+*.ico binary

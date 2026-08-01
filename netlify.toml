@@ -1,0 +1,38 @@
+# Netlify configuration for the leadcard microsite template.
+#
+# Two things cannot be expressed in this file and must be switched on once, in
+# the Netlify site dashboard, before the CMS will work:
+#
+#   1. Site settings -> Identity -> Enable Identity, then set registration to
+#      "Invite only" (never "Open" — that would let anyone request an editor
+#      account on the site's content repo).
+#   2. Site settings -> Identity -> Services -> Git Gateway -> Enable.
+#
+# Then invite the client from Identity -> Invite users. They accept by email and
+# land on /admin/.
+#
+# Netlify Forms needs no configuration here: the build emits a static <form>
+# with `data-netlify="true"` into dist/index.html and Netlify's post-processing
+# registers it automatically. Submissions appear under Forms -> panel-1-lead.
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Decap CMS admin is a static SPA; make sure it is never rewritten away.
+[[headers]]
+  for = "/admin/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"

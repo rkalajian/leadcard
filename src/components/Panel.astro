@@ -1,0 +1,88 @@
+---
+/**
+ * One accordion panel: a header button plus the collapsible region it controls.
+ *
+ * a11y contract (ARIA Authoring Practices, Accordion pattern):
+ *   - the header is a real <button> inside a heading, so Enter/Space and
+ *     screen-reader heading navigation both work with no extra JS;
+ *   - `aria-expanded` mirrors state, `aria-controls` points at the region;
+ *   - the region is labelled by its header button;
+ *   - collapsed content is `visibility: hidden` (see global.css), which removes
+ *     it from both the tab order and the accessibility tree.
+ */
+import BackgroundMedia from './BackgroundMedia.astro';
+
+interface Props {
+  panel: {
+    key: string;
+    number: number;
+    panelId: string;
+    headerId: string;
+    eyebrow: string;
+    title: string;
+    background: any;
+  };
+  expanded: boolean;
+}
+
+const { panel, expanded } = Astro.props;
+---
+
+<section
+  id={panel.key}
+  data-panel
+  data-panel-key={panel.key}
+  data-expanded={expanded ? 'true' : 'false'}
+  class="relative isolate border-b border-hairline last:border-b-0"
+>
+  <BackgroundMedia background={panel.background} />
+
+  <h2 class="relative m-0">
+    <button
+      type="button"
+      id={panel.headerId}
+      data-panel-toggle
+      aria-expanded={expanded ? 'true' : 'false'}
+      aria-controls={panel.panelId}
+      class="tap-target flex w-full items-center gap-4 px-5 py-6 text-left"
+    >
+      <span
+        class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-hairline text-base font-semibold tabular-nums"
+        aria-hidden="true">{panel.number}</span
+      >
+
+      <span class="flex min-w-0 flex-1 flex-col gap-1">
+        {
+          panel.eyebrow && (
+            <span class="text-xs font-semibold uppercase tracking-[0.14em] text-accent">
+              {panel.eyebrow}
+            </span>
+          )
+        }
+        <span class="font-heading text-xl font-semibold leading-snug">{panel.title}</span>
+      </span>
+
+      <svg
+        class="panel-chevron h-6 w-6 shrink-0"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <path d="m6 9 6 6 6-6"></path>
+      </svg>
+    </button>
+  </h2>
+
+  <div id={panel.panelId} role="region" aria-labelledby={panel.headerId} class="panel-body relative">
+    <div class="panel-body-inner">
+      <div class="px-5 pb-8 pt-1">
+        <slot />
+      </div>
+    </div>
+  </div>
+</section>

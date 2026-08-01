@@ -1,0 +1,54 @@
+---
+/**
+ * Optional analytics injection.
+ *
+ * Both IDs come from the CMS (`analytics.ga4Id` / `analytics.gtmId`) and are
+ * validated against a strict pattern in src/lib/site.js before they reach this
+ * component, so nothing editor-supplied can break out of the script literal.
+ * Either, both, or neither may be set — nothing is hardcoded in the template.
+ */
+import { site } from '../lib/site.js';
+
+interface Props {
+  /** Render the <noscript> iframe half of the GTM snippet instead of the head half. */
+  body?: boolean;
+}
+
+const { body = false } = Astro.props;
+const { ga4Id, gtmId } = site.analytics;
+---
+
+{
+  body ? (
+    gtmId && (
+      <noscript>
+        {/* Title is required so the iframe is not an unlabelled frame (WCAG 4.1.2). */}
+        <iframe
+          src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`}
+          height="0"
+          width="0"
+          title="Google Tag Manager"
+          style="display:none;visibility:hidden"
+        />
+      </noscript>
+    )
+  ) : (
+    <>
+      {gtmId && (
+        <script
+          is:inline
+          set:html={`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${gtmId}');`}
+        />
+      )}
+      {ga4Id && (
+        <>
+          <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${ga4Id}`} />
+          <script
+            is:inline
+            set:html={`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${ga4Id}');`}
+          />
+        </>
+      )}
+    </>
+  )
+}

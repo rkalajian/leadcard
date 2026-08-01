@@ -1,0 +1,152 @@
+---
+/**
+ * Panel 1 lead form — a real, static <form> in the built HTML.
+ *
+ * Netlify detects forms by scraping the deployed HTML at build time, which is
+ * why this stays plain markup with `data-netlify="true"` and a matching hidden
+ * `form-name` input. No serverless function, no client-side submit handler.
+ *
+ * Validation is native HTML5 (`required`, `type="email"`), so there is no
+ * bespoke validation JS to drift out of sync with assistive tech. The only
+ * script here reveals the success message after Netlify's redirect back.
+ */
+import { site } from '../lib/site.js';
+
+const form = site.form;
+const helpId = 'lead-form-help';
+const requiredNoteId = 'lead-form-required-note';
+const hasRequired = form.fields.some((field: any) => field.required);
+---
+
+<div class="relative">
+  <!-- Success state. Netlify redirects to the `action` URL after a valid POST;
+       the script below swaps the panel over and moves focus here. -->
+  <div
+    id="lead-form-success"
+    data-form-success
+    hidden
+    role="status"
+    aria-live="polite"
+    class="rounded-xl border border-hairline bg-white/10 p-5"
+  >
+    <h3 tabindex="-1" class="font-heading text-lg font-semibold">{form.successHeading}</h3>
+    <p class="mt-2 text-muted">{form.successBody}</p>
+  </div>
+
+  <form
+    data-lead-form
+    name={form.name}
+    method="POST"
+    action="/?submitted=true"
+    data-netlify="true"
+    data-netlify-honeypot={form.honeypot}
+    class="flex flex-col gap-4"
+  >
+    {/* Required by Netlify so the POST is attributed to the right form. */}
+    <input type="hidden" name="form-name" value={form.name} />
+
+    {/* Spam trap. Hidden from everyone, including assistive tech, and removed
+        from the tab order — it is never a control a real visitor meets. */}
+    <p class="hidden" aria-hidden="true">
+      <label>
+        Leave this field empty
+        <input name={form.honeypot} tabindex="-1" autocomplete="off" />
+      </label>
+    </p>
+
+    {
+      hasRequired && form.requiredNote && (
+        <p id={requiredNoteId} class="text-sm text-muted">
+          {form.requiredNote}
+        </p>
+      )
+    }
+
+    {
+      form.fields.map((field: any) => (
+        <div class="flex flex-col gap-1.5">
+          <label class="font-medium" for={field.id}>
+            {field.label}
+            {field.required && (
+              <>
+                {/* The asterisk is decorative; the requirement is conveyed by
+                    text and by `required`, never by colour alone (WCAG 1.4.1). */}
+                <span aria-hidden="true"> *</span>
+                <span class="sr-only"> (required)</span>
+              </>
+            )}
+          </label>
+
+          {field.multiline ? (
+            <textarea
+              class="field-input min-h-[7rem] resize-y"
+              id={field.id}
+              name={field.name}
+              rows="4"
+              required={field.required}
+              aria-required={field.required ? 'true' : undefined}
+              autocomplete={field.autocomplete || undefined}
+              placeholder={field.placeholder || undefined}
+              aria-describedby={field.required && form.requiredNote ? requiredNoteId : undefined}
+            />
+          ) : (
+            <input
+              class="field-input"
+              id={field.id}
+              name={field.name}
+              type={field.type}
+              required={field.required}
+              aria-required={field.required ? 'true' : undefined}
+              autocomplete={field.autocomplete || undefined}
+              placeholder={field.placeholder || undefined}
+              aria-describedby={field.required && form.requiredNote ? requiredNoteId : undefined}
+            />
+          )}
+        </div>
+      ))
+    }
+
+    <button type="submit" class="btn-primary mt-1" aria-describedby={form.helpText ? helpId : undefined}>
+      {form.submitLabel}
+    </button>
+
+    {
+      form.helpText && (
+        <p id={helpId} class="text-sm text-muted">
+          {form.helpText}
+        </p>
+      )
+    }
+  </form>
+</div>
+
+<script>
+  /**
+   * Netlify posts the form, then redirects to the form's `action` URL. We use
+   * that round trip as the success signal: no fetch(), no JSON, nothing that
+   * breaks if JS fails.
+   */
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('submitted') === 'true') {
+    const success = document.querySelector<HTMLElement>('[data-form-success]');
+    const form = document.querySelector<HTMLFormElement>('[data-lead-form]');
+
+    if (success && form) {
+      form.hidden = true;
+      success.hidden = false;
+
+      // Make sure the panel holding the message is the open one.
+      const panel = success.closest<HTMLElement>('[data-panel]');
+      if (panel && panel.dataset.expanded !== 'true') {
+        panel.querySelector<HTMLButtonElement>('[data-panel-toggle]')?.click();
+      }
+
+      success.querySelector<HTMLElement>('h3')?.focus();
+
+      // Drop the marker so a refresh does not re-show the confirmation.
+      const url = new URL(window.location.href);
+      url.searchParams.delete('submitted');
+      window.history.replaceState({}, '', url.toString());
+    }
+  }
+</script>

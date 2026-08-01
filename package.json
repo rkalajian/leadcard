@@ -1,0 +1,30 @@
+{
+  "name": "leadcard",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Three-panel mobile microsite template — Astro SSG + Decap CMS + Netlify Forms.",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "cms:proxy": "decap-server"
+  },
+  "dependencies": {
+    "astro": "^5.6.1"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.20",
+    "decap-server": "^3.1.4",
+    "js-yaml": "^4.1.0",
+    "marked": "^15.0.7",
+    "postcss": "^8.5.3",
+    "sanitize-html": "^2.14.0",
+    "tailwindcss": "^3.4.17"
+  },
+  "engines": {
+    "node": ">=18.20.8"
+  }
+}

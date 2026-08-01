@@ -1,0 +1,91 @@
+---
+/**
+ * The whole microsite: hero, three accordion panels, footer.
+ *
+ * Everything rendered here comes from the Decap singleton at
+ * src/content/settings/site.yml. Cloning this repo for a new client should
+ * never require touching a .astro file.
+ */
+import Accordion from '../components/Accordion.astro';
+import Panel from '../components/Panel.astro';
+import PanelForm from '../components/PanelForm.astro';
+import PanelInfo from '../components/PanelInfo.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../lib/site.js';
+
+const { brand, panels, footer } = site;
+const year = new Date().getFullYear();
+---
+
+<BaseLayout>
+  <header class="px-5 pb-7 pt-9">
+    {
+      brand.logo && (
+        <img
+          src={brand.logo}
+          alt={brand.logoAlt || brand.siteTitle}
+          class="mb-5 h-10 w-auto"
+          width="160"
+          height="40"
+        />
+      )
+    }
+    <p class="text-sm font-semibold uppercase tracking-[0.16em] text-accent">{brand.siteTitle}</p>
+    <h1 class="mt-2 font-heading text-3xl font-bold leading-tight">{brand.headline}</h1>
+    {brand.subheadline && <p class="mt-3 text-muted">{brand.subheadline}</p>}
+  </header>
+
+  <main id="main" class="flex-1">
+    <Accordion>
+      {
+        panels.map((panel: any, index: number) => (
+          <Panel panel={panel} expanded={index === 0}>
+            <PanelInfo
+              bodyHtml={panel.bodyHtml}
+              ctaLabel={panel.showForm ? '' : panel.ctaLabel}
+              ctaHref={panel.showForm ? '' : panel.ctaHref}
+            />
+            {panel.showForm && (
+              <div class={panel.bodyHtml ? 'mt-6' : ''}>
+                <PanelForm />
+              </div>
+            )}
+          </Panel>
+        ))
+      }
+    </Accordion>
+  </main>
+
+  <footer class="px-5 pb-10 pt-8 text-sm text-muted">
+    <p>&copy; {year} {footer.legalName || brand.siteTitle}</p>
+    {footer.note && <p class="mt-2">{footer.note}</p>}
+
+    {
+      (footer.phone || footer.email || footer.privacyUrl) && (
+        <ul class="mt-4 flex flex-wrap gap-x-5 gap-y-1">
+          {footer.phone && (
+            <li>
+              <a class="tap-target inline-flex items-center underline" href={`tel:${footer.phone.replace(/[^\d+]/g, '')}`}>
+                {footer.phone}
+              </a>
+            </li>
+          )}
+          {footer.email && (
+            <li>
+              <a class="tap-target inline-flex items-center underline" href={`mailto:${footer.email}`}>
+                {footer.email}
+              </a>
+            </li>
+          )}
+          {footer.privacyUrl && (
+            <li>
+              <a class="tap-target inline-flex items-center underline" href={footer.privacyUrl}>
+                Privacy policy
+              </a>
+            </li>
+          )}
+        </ul>
+      )
+    }
+  </footer>
+</BaseLayout>

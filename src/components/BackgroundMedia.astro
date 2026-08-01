@@ -1,0 +1,135 @@
+---
+/**
+ * Decorative panel background: image or video, CMS-selected per panel.
+ *
+ * Contrast guardrail: whatever media the client uploads, a tinted overlay sits
+ * between it and the text. The tint colour is derived from the theme surface
+ * and its opacity is clamped to a floor in src/lib/contrast.js, so text can
+ * never end up sitting on raw photography (WCAG 1.4.3).
+ *
+ * Reduced motion: the <video> element ships with NO src attribute. The inline
+ * script only attaches one when `prefers-reduced-motion` is not `reduce`, so
+ * reduced-motion visitors never download the file and simply keep the poster
+ * image that is painted underneath (WCAG 2.2.2 / 2.3.3).
+ */
+interface Background {
+  type: string;
+  image: string;
+  video: string;
+  poster: string;
+  alt: string;
+  focalPoint: string;
+  overlayOpacity: number;
+  overlayColor: string;
+}
+
+interface Props {
+  background: Background;
+}
+
+const { background } = Astro.props;
+const { type, image, video, poster, alt, focalPoint, overlayOpacity, overlayColor } = background;
+
+const objectPosition = `center ${focalPoint}`;
+const stillSrc = type === 'video' ? poster : image;
+/* An empty alt means "decorative": the editor left the alt field blank, so the
+   whole background layer is hidden from assistive tech rather than announced
+   as an unnamed image. */
+const decorative = alt.trim() === '';
+---
+
+<div
+  class="pointer-events-none absolute inset-0 overflow-hidden"
+  aria-hidden={decorative ? 'true' : undefined}
+>
+  {
+    stillSrc && (
+      <img
+        src={stillSrc}
+        alt={alt}
+        loading="lazy"
+        decoding="async"
+        class="absolute inset-0 h-full w-full object-cover"
+        style={`object-position:${objectPosition}`}
+      />
+    )
+  }
+
+  {
+    type === 'video' && video && (
+      <video
+        data-bg-video
+        data-src={video}
+        poster={poster || undefined}
+        muted
+        loop
+        playsinline
+        preload="none"
+        tabindex="-1"
+        aria-hidden="true"
+        class="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-500 data-[playing]:opacity-100"
+        style={`object-position:${objectPosition}`}
+      />
+    )
+  }
+
+  {/* Contrast shield. Sits above the media, below the panel content. */}
+  <div
+    class="absolute inset-0"
+    style={`background-color:${overlayColor};opacity:${overlayOpacity}`}
+  >
+  </div>
+</div>
+
+<script>
+  /**
+   * Attach video sources only when motion is welcome. Astro hoists and dedupes
+   * this module, so it runs once per page no matter how many panels use video.
+   */
+  const REDUCED = '(prefers-reduced-motion: reduce)';
+
+  function activateBackgroundVideos() {
+    if (window.matchMedia(REDUCED).matches) return;
+
+    const videos = document.querySelectorAll<HTMLVideoElement>('video[data-bg-video]');
+    videos.forEach((video) => {
+      const src = video.dataset.src;
+      if (!src || video.getAttribute('src')) return;
+
+      video.muted = true; // required for programmatic autoplay
+      video.loop = true;
+      video.autoplay = true;
+      video.setAttribute('src', src);
+      video.load();
+
+      const reveal = () => video.setAttribute('data-playing', '');
+      video.addEventListener('playing', reveal, { once: true });
+
+      const attempt = video.play();
+      if (attempt && typeof attempt.catch === 'function') {
+        // Autoplay refused (data saver, low power mode): the poster stays.
+        attempt.catch(() => {});
+      }
+    });
+  }
+
+  function teardownBackgroundVideos() {
+    document.querySelectorAll<HTMLVideoElement>('video[data-bg-video]').forEach((video) => {
+      video.pause();
+      video.removeAttribute('data-playing');
+      video.removeAttribute('src');
+      video.load();
+    });
+  }
+
+  activateBackgroundVideos();
+
+  // Honour the preference changing mid-session, not just at load.
+  const query = window.matchMedia(REDUCED);
+  const onChange = (event: MediaQueryListEvent) =>
+    event.matches ? teardownBackgroundVideos() : activateBackgroundVideos();
+
+  if (typeof query.addEventListener === 'function') {
+    query.addEventListener('change', onChange);
+  }
+</script>

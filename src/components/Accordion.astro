@@ -1,0 +1,143 @@
+---
+/**
+ * Accordion container. Owns open/close state for every <Panel> beneath it.
+ *
+ * Behaviour: strictly one panel open at a time. Opening a panel closes whatever
+ * else was open; clicking the currently open header closes it (users must be
+ * able to undo their own action). Panel 1 is rendered expanded, in the HTML, so
+ * the first paint is correct with no JS and no layout shift.
+ */
+---
+
+<div data-accordion class="flex flex-col">
+  <slot />
+</div>
+
+<noscript>
+  <!-- Without JS the headers cannot toggle, so every panel is shown open
+       rather than leaving content permanently unreachable. -->
+  <style>
+    [data-accordion] .panel-body {
+      grid-template-rows: 1fr !important;
+      visibility: visible !important;
+    }
+    [data-accordion] .panel-chevron {
+      display: none;
+    }
+  </style>
+</noscript>
+
+<script>
+  const EXPANDED = 'true';
+  const COLLAPSED = 'false';
+
+  function setup(accordion: HTMLElement) {
+    const panels = Array.from(accordion.querySelectorAll<HTMLElement>('[data-panel]'));
+    if (panels.length === 0) return;
+
+    const toggles = panels
+      .map((panel) => panel.querySelector<HTMLButtonElement>('[data-panel-toggle]'))
+      .filter((el): el is HTMLButtonElement => el !== null);
+
+    const prefersReducedMotion = () =>
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function setState(target: HTMLElement, open: boolean) {
+      for (const panel of panels) {
+        // Single-open: everything that is not the target closes.
+        const isTarget = panel === target;
+        const next = isTarget && open;
+        panel.dataset.expanded = next ? EXPANDED : COLLAPSED;
+        const toggle = panel.querySelector<HTMLButtonElement>('[data-panel-toggle]');
+        toggle?.setAttribute('aria-expanded', next ? EXPANDED : COLLAPSED);
+      }
+    }
+
+    function open(panel: HTMLElement, { scroll = true } = {}) {
+      if (panel.dataset.expanded === EXPANDED) return;
+      setState(panel, true);
+      if (!scroll) return;
+      // Bring the newly revealed header into view; instant when motion is
+      // reduced, so the preference is honoured here too.
+      window.requestAnimationFrame(() => {
+        panel.scrollIntoView({
+          behavior: prefersReducedMotion() ? 'auto' : 'smooth',
+          block: 'start',
+        });
+      });
+    }
+
+    accordion.addEventListener('click', (event) => {
+      const toggle = (event.target as HTMLElement | null)?.closest<HTMLButtonElement>(
+        '[data-panel-toggle]'
+      );
+      if (!toggle || !accordion.contains(toggle)) return;
+
+      const panel = toggle.closest<HTMLElement>('[data-panel]');
+      if (!panel) return;
+
+      const isOpen = panel.dataset.expanded === EXPANDED;
+      if (isOpen) {
+        setState(panel, false);
+      } else {
+        open(panel);
+      }
+    });
+
+    // Optional keyboard niceties from the ARIA accordion pattern. Enter/Space
+    // already work because the headers are real buttons.
+    accordion.addEventListener('keydown', (event: KeyboardEvent) => {
+      const current = (event.target as HTMLElement | null)?.closest<HTMLButtonElement>(
+        '[data-panel-toggle]'
+      );
+      if (!current) return;
+
+      const index = toggles.indexOf(current);
+      if (index === -1) return;
+
+      let nextIndex: number | null = null;
+      switch (event.key) {
+        case 'ArrowDown':
+          nextIndex = (index + 1) % toggles.length;
+          break;
+        case 'ArrowUp':
+          nextIndex = (index - 1 + toggles.length) % toggles.length;
+          break;
+        case 'Home':
+          nextIndex = 0;
+          break;
+        case 'End':
+          nextIndex = toggles.length - 1;
+          break;
+        default:
+          return;
+      }
+
+      event.preventDefault();
+      toggles[nextIndex]?.focus();
+    });
+
+    // In-page links (CMS call-to-action buttons use `#panel-1`) must open the
+    // panel they point at, not just scroll to a collapsed header.
+    function openFromHash(hash: string, opts?: { scroll?: boolean }) {
+      const id = hash.replace(/^#/, '');
+      if (!id) return;
+      const panel = panels.find((p) => p.id === id || p.dataset.panelKey === id);
+      if (panel) open(panel, opts);
+    }
+
+    document.addEventListener('click', (event) => {
+      const link = (event.target as HTMLElement | null)?.closest<HTMLAnchorElement>('a[href^="#"]');
+      if (!link) return;
+      openFromHash(link.hash);
+    });
+
+    window.addEventListener('hashchange', () => openFromHash(window.location.hash));
+
+    if (window.location.hash) openFromHash(window.location.hash, { scroll: false });
+  }
+
+  document
+    .querySelectorAll<HTMLElement>('[data-accordion]')
+    .forEach((accordion) => setup(accordion));
+</script>
