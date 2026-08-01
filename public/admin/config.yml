@@ -7,8 +7,6 @@
 backend:
   name: git-gateway
   branch: main
-  preview_styles:
-    - /index.css
   commit_messages:
     update: 'content: update {{collection}} “{{slug}}”'
     openAuthoring: 'content: update {{collection}} “{{slug}}” ({{author-login}})'
