@@ -1,30 +1,26 @@
 brand:
-  # BCP 47 language tag written to <html lang>. Screen readers use it to pick a
-  # pronunciation voice (WCAG 3.1.1).
   lang: en
   siteTitle: Northwind Roofing
   headline: Storm damage? We handle the whole claim.
   subheadline: Free 20-minute inspection. No obligation, no pressure.
-  metaDescription: Free roof inspection and full storm-damage claim support. Book in under a minute.
-  logoAlt: ''
-  logo: ''
-
+  metaDescription: Free roof inspection and full storm-damage claim support. Book
+    in under a minute.
+  logoAlt: ""
+  logo: /media/secondary-logo-white-.webp
 theme:
-  headingFont: Sora
+  colorBg: "#0B1120"
+  colorMuted: "#C3CCE4"
+  colorSurface: "#151E33"
+  colorPrimaryText: "#FFFFFF"
+  colorAccent: "#7DD3FC"
+  colorText: "#F4F7FF"
   bodyFont: Inter
-  colorBg: '#0B1120'
-  colorSurface: '#151E33'
-  colorText: '#F4F7FF'
-  colorMuted: '#C3CCE4'
-  colorPrimary: '#2563EB'
-  colorPrimaryText: '#FFFFFF'
-  colorAccent: '#7DD3FC'
+  headingFont: Sora
   overlayOpacity: 0.68
-
+  colorPrimary: "#2563EB"
 analytics:
-  ga4Id: ''
-  gtmId: ''
-
+  ga4Id: ""
+  gtmId: ""
 form:
   submitLabel: Request my free inspection
   helpText: We reply within one business day. We never sell your details.
@@ -37,26 +33,25 @@ form:
       type: text
       autocomplete: name
       required: true
-      placeholder: ''
+      placeholder: ""
     - name: email
       label: Email address
       type: email
       autocomplete: email
       required: true
-      placeholder: ''
+      placeholder: ""
     - name: phone
       label: Phone number
       type: tel
       autocomplete: tel
       required: false
-      placeholder: ''
+      placeholder: ""
     - name: message
       label: What happened to your roof?
       type: textarea
-      autocomplete: ''
+      autocomplete: ""
       required: false
-      placeholder: ''
-
+      placeholder: ""
 panels:
   - key: panel-1
     eyebrow: Step one
@@ -65,19 +60,16 @@ panels:
       Tell us where you are and what you are seeing. We will schedule a
       **20-minute inspection** at a time that suits you.
     showForm: true
-    ctaLabel: ''
-    ctaHref: ''
+    ctaLabel: ""
+    ctaHref: ""
     background:
       type: image
       image: /media/panel-1.svg
-      # Blank alt = decorative. The whole background layer is then hidden from
-      # screen readers instead of being announced as an unnamed image.
-      alt: ''
-      video: ''
-      poster: ''
+      alt: ""
+      video: ""
+      poster: ""
       overlayOpacity: 0.72
       focalPoint: center
-
   - key: panel-2
     eyebrow: Step two
     title: We document the damage
@@ -90,16 +82,15 @@ panels:
       - Written summary within 24 hours
     showForm: false
     ctaLabel: See a sample report
-    ctaHref: '#panel-1'
+    ctaHref: "#panel-1"
     background:
       type: image
       image: /media/panel-2.svg
-      alt: ''
-      video: ''
-      poster: ''
+      alt: ""
+      video: ""
+      poster: ""
       overlayOpacity: 0.7
       focalPoint: center
-
   - key: panel-3
     eyebrow: Step three
     title: We handle the claim end to end
@@ -108,19 +99,18 @@ panels:
       have to make a second phone call.
     showForm: false
     ctaLabel: Start my claim
-    ctaHref: '#panel-1'
+    ctaHref: "#panel-1"
     background:
       type: image
       image: /media/panel-3.svg
-      alt: ''
-      video: ''
-      poster: ''
+      alt: ""
+      video: ""
+      poster: ""
       overlayOpacity: 0.7
       focalPoint: center
-
 footer:
   legalName: Northwind Roofing LLC
-  phone: ''
-  email: ''
-  privacyUrl: ''
+  phone: ""
+  email: ""
+  privacyUrl: ""
   note: Licensed and insured. Free inspections carry no obligation.
