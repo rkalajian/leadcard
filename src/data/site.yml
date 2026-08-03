@@ -12,7 +12,7 @@ brand:
   logo: /media/secondary-logo-white-.webp
 theme:
   colorBg: "#000000"
-  colorMuted: "#ff7300"
+  colorMuted: "#ffffff"
   colorSurface: "#000000"
   colorPrimaryText: "#000000"
   colorAccent: "#ff7300"
