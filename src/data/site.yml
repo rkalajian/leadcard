@@ -25,7 +25,7 @@ analytics:
   ga4Id: ""
   gtmId: ""
 form:
-  submitLabel: Request my free inspection
+  submitLabel: Request my free quote
   helpText: We reply within one business day. We never sell your details.
   requiredNote: Fields marked with an asterisk are required.
   successHeading: Thanks — we got it.
@@ -50,7 +50,7 @@ form:
       required: false
       placeholder: ""
     - name: message
-      label: What happened to your roof?
+      label: What are you flying?
       type: textarea
       autocomplete: ""
       required: false
@@ -58,10 +58,8 @@ form:
 panels:
   - key: panel-1
     eyebrow: Step one
-    title: Book your free inspection
-    body: |
-      Tell us where you are and what you are seeing. We will schedule a
-      **20-minute inspection** at a time that suits you.
+    title: Reach Out
+    body: Tell us who you are and what you're flying. We'll be in touch.
     showForm: true
     ctaLabel: ""
     ctaHref: ""
@@ -75,17 +73,11 @@ panels:
       focalPoint: center
   - key: panel-2
     eyebrow: Step two
-    title: We document the damage
-    body: |
-      Our inspectors photograph every affected slope, log measurements, and
-      build the evidence pack your insurer actually asks for.
-
-      - Full photographic survey
-      - Moisture and decking checks
-      - Written summary within 24 hours
+    title: Get an Instant Estimate
+    body: Take a few minutes to get an instant estimate.
     showForm: false
-    ctaLabel: See a sample report
-    ctaHref: "#panel-1"
+    ctaLabel: Get a Quote
+    ctaHref: https://portal.5x5insurance.com/indication/3ce5e1b4-a6aa-4c9f-94aa-25bbe7971a9a/step1
     background:
       type: image
       image: /media/panel-2.svg
@@ -96,13 +88,14 @@ panels:
       focalPoint: center
   - key: panel-3
     eyebrow: Step three
-    title: We handle the claim end to end
-    body: |
-      You approve the scope, we deal with the adjuster. Most homeowners never
-      have to make a second phone call.
+    title: Broker-free
+    body: 5X5 draws on years of experience building successful companies that fill
+      market gaps and disrupt outdated business models. Our team includes
+      veteran pilots and aviation industry specialists, and we like to think
+      we’ll be judged by the company we keep.
     showForm: false
-    ctaLabel: Start my claim
-    ctaHref: "#panel-1"
+    ctaLabel: About Us
+    ctaHref: https://portal.5x5insurance.com/indication/3ce5e1b4-a6aa-4c9f-94aa-25bbe7971a9a/step1
     background:
       type: image
       image: /media/panel-3.svg
