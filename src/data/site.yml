@@ -1,23 +1,26 @@
 brand:
   lang: en
-  siteTitle: Northwind Roofing
-  headline: Storm damage? We handle the whole claim.
-  subheadline: Free 20-minute inspection. No obligation, no pressure.
-  metaDescription: Free roof inspection and full storm-damage claim support. Book
-    in under a minute.
+  siteTitle: 5x5 Aviation Insurance
+  headline: Insurance without Turbulence
+  subheadline: Instant Estimates
+  metaDescription: >
+    Pilots and owners have been loud and clear about aviation insurance. It
+    doesn’t work for them. The entrepreneurs, pilots and insurance specialists
+    at 5X5 Aviation Insurance devised a better approach, one offering multiple
+    options for liability and hull coverage.
   logoAlt: ""
   logo: /media/secondary-logo-white-.webp
 theme:
-  colorBg: "#0B1120"
-  colorMuted: "#C3CCE4"
-  colorSurface: "#151E33"
-  colorPrimaryText: "#FFFFFF"
-  colorAccent: "#7DD3FC"
-  colorText: "#F4F7FF"
+  colorBg: "#000000"
+  colorMuted: "#ff7300"
+  colorSurface: "#000000"
+  colorPrimaryText: "#000000"
+  colorAccent: "#ff7300"
+  colorText: "#ffffff"
   bodyFont: Inter
   headingFont: Sora
   overlayOpacity: 0.68
-  colorPrimary: "#2563EB"
+  colorPrimary: "#ff7300"
 analytics:
   ga4Id: ""
   gtmId: ""
@@ -109,7 +112,7 @@ panels:
       overlayOpacity: 0.7
       focalPoint: center
 footer:
-  legalName: Northwind Roofing LLC
+  legalName: 5x5 Aviation Insurance
   phone: ""
   email: ""
   privacyUrl: ""
