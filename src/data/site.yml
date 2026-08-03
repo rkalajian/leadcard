@@ -63,10 +63,10 @@ panels:
     ctaLabel: ""
     ctaHref: ""
     background:
-      type: image
+      type: video
       image: /media/panel-1.svg
       alt: ""
-      video: ""
+      video: /media/0_abstract_background_720x1280.mp4
       poster: ""
       overlayOpacity: 0.72
       focalPoint: center
