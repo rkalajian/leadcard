@@ -88,18 +88,33 @@ collections:
               - name: headingFont
                 label: Heading font
                 widget: select
-                default: Sora
+                default: Inter
                 options:
-                  - Inter
-                  - Sora
-                  - Manrope
-                  - Poppins
-                  - Montserrat
-                  - Playfair Display
-                  - Merriweather
-                  - Source Serif 4
-                  - Space Grotesk
+                  - Abril Fatface
                   - DM Sans
+                  - Figtree
+                  - Fira Sans
+                  - IBM Plex Sans
+                  - Inconsolata
+                  - Inter
+                  - JetBrains Mono
+                  - Lato
+                  - Lexend
+                  - Libre Franklin
+                  - Merriweather
+                  - Montserrat
+                  - Nunito
+                  - Open Sans
+                  - Outfit
+                  - Playfair Display
+                  - Poppins
+                  - Raleway
+                  - Roboto
+                  - Source Sans Pro
+                  - Space Mono
+                  - Ubuntu
+                  - Urbanist
+                  - Work Sans
               - name: bodyFont
                 label: Body font
                 widget: select
