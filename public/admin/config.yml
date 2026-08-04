@@ -120,16 +120,31 @@ collections:
                 widget: select
                 default: Inter
                 options:
-                  - Inter
-                  - Sora
-                  - Manrope
-                  - Poppins
-                  - Montserrat
-                  - Merriweather
-                  - Source Serif 4
-                  - Space Grotesk
+                  - Abril Fatface
                   - DM Sans
-                  - Nunito Sans
+                  - Figtree
+                  - Fira Sans
+                  - IBM Plex Sans
+                  - Inconsolata
+                  - Inter
+                  - JetBrains Mono
+                  - Lato
+                  - Lexend
+                  - Libre Franklin
+                  - Merriweather
+                  - Montserrat
+                  - Nunito
+                  - Open Sans
+                  - Outfit
+                  - Playfair Display
+                  - Poppins
+                  - Raleway
+                  - Roboto
+                  - Source Sans Pro
+                  - Space Mono
+                  - Ubuntu
+                  - Urbanist
+                  - Work Sans
               - {
                   name: colorBg,
                   label: Page background,
