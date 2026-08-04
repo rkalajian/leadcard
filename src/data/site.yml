@@ -18,7 +18,7 @@ theme:
   colorAccent: "#ff7300"
   colorText: "#ffffff"
   bodyFont: Inter
-  headingFont: Sora
+  headingFont: Raleway
   overlayOpacity: 0.68
   colorPrimary: "#ff7300"
 analytics:
