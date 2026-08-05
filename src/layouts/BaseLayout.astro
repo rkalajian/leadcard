@@ -8,7 +8,7 @@
  * tailwind.config.mjs points its tokens at the same properties.
  */
 import Analytics from '../components/Analytics.astro';
-import { googleFontsHref, site, themeCssVariables } from '../lib/site.js';
+import { googleFontsHref, site, themeCssVariables, customFontFaceRules } from '../lib/site.js';
 import '../styles/global.css';
 
 interface Props {
@@ -25,6 +25,7 @@ const {
 
 const fontsHref = googleFontsHref();
 const cssVars = themeCssVariables();
+const fontFaceRules = customFontFaceRules();
 ---
 
 <!doctype html>
@@ -54,7 +55,7 @@ const cssVars = themeCssVariables();
       )
     }
 
-    <style is:inline set:html={`:root {\n    ${cssVars}\n  }`}></style>
+    <style is:inline set:html={`:root {\n    ${cssVars}\n  }\n\n  ${fontFaceRules}`}></style>
   </head>
 
   <body class="min-h-dvh bg-bg text-ink antialiased">
