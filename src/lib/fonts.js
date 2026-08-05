@@ -59,6 +59,9 @@ function parseFilename(filename) {
 
   if (isNaN(weight)) return null;
 
+  const ALLOWED_WEIGHTS = new Set([100, 300, 400, 600, 700, 800, 900]);
+  if (!ALLOWED_WEIGHTS.has(weight)) return null;
+
   return { family, style, weight };
 }
 

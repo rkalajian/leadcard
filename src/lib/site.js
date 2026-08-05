@@ -398,7 +398,7 @@ export const site = load();
  */
 export function googleFontsHref() {
   const families = [...new Set([site.theme.headingFont, site.theme.bodyFont])]
-    .filter((f) => f && !/^system(-ui)?$/i.test(f))
+    .filter((f) => f && !/^system(-ui)?$/i.test(f) && !customFonts.has(f))
     .map((f) => `family=${encodeURIComponent(f).replace(/%20/g, '+')}:wght@400;500;600;700`);
   if (families.length === 0) return null;
   return `https://fonts.googleapis.com/css2?${families.join('&')}&display=swap`;
