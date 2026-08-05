@@ -10,6 +10,7 @@ import { marked } from 'marked';
 import sanitizeHtml from 'sanitize-html';
 
 import { clampOverlay, enforceContrast, normalizeHex, relativeLuminance } from './contrast.js';
+import { buildCustomFontRegistry } from './fonts.js';
 
 // Resolved by Vite, so it works identically in `astro dev` and `astro build`
 // and gives us hot-reload when an editor saves site.yml locally.
@@ -22,6 +23,8 @@ const rawFiles = /** @type {Record<string, string>} */ (
 );
 
 const RAW = Object.values(rawFiles)[0] ?? '';
+
+const customFonts = await buildCustomFontRegistry();
 
 const DEFAULT_THEME = {
   headingFont: 'Inter',
@@ -419,6 +422,26 @@ export function themeCssVariables() {
     `--overlay-color: ${t.overlayColor};`,
     `--overlay-opacity: ${t.overlayOpacity};`,
   ].join('\n    ');
+}
+
+/** CSS `@font-face` rules for fonts discovered by `buildCustomFontRegistry()`. */
+export function customFontFaceRules() {
+  if (!customFonts || customFonts.size === 0) return '';
+
+  const rules = [];
+  for (const [family, fontData] of customFonts) {
+    for (const file of fontData.files) {
+      const format = file.path.endsWith('.woff2') ? 'woff2' : file.path.endsWith('.ttf') ? 'truetype' : 'opentype';
+      rules.push(`@font-face {
+  font-family: '${family}';
+  src: url('${file.path}') format('${format}');
+  font-weight: ${file.weight};
+  font-style: ${file.style};
+}`);
+    }
+  }
+
+  return rules.join('\n\n');
 }
 
 export default site;
